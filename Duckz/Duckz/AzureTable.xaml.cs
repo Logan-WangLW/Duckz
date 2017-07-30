@@ -3,43 +3,36 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices;
 using Xamarin.Forms;
+using Xamarin.Forms.Maps;
 using Plugin.Geolocator;
 
 namespace Duckz
 {
     public partial class AzureTable : ContentPage
     {
-
+        Geocoder geoCoder;
         public AzureTable()
         {
             InitializeComponent();
+            geoCoder = new Geocoder();
 
         }
 
         async void Handle_ClickedAsync(object sender, System.EventArgs e)
         {
+            loading.IsRunning = true;
             List<DuckModel> DuckInformation = await AzureManager.AzureManagerInstance.GetDuckInformation();
 
-            DuckList.ItemsSource = DuckInformation;
-            await PostLocationAsync();
-        }
-        private async Task PostLocationAsync()
-        {
-
-            var locator = CrossGeolocator.Current;
-            locator.DesiredAccuracy = 50;
-
-            var position = await locator.GetPositionAsync(TimeSpan.FromSeconds(10));
-
-            DuckModel model = new DuckModel()
+            foreach (DuckModel model in DuckInformation)
             {
-                Longitude = (float)position.Longitude,
-                Latitude = (float)position.Latitude
+                var position = new Position(model.Latitude, model.Longitude);
+                var possibleAddresses = await geoCoder.GetAddressesForPositionAsync(position);
+                foreach (var address in possibleAddresses)
+                    model.City = address;
+            }
 
-            };
-
-            await AzureManager.AzureManagerInstance.PostDuckInformation(model);
+            DuckList.ItemsSource = DuckInformation;
+            loading.IsRunning = false;
         }
-
     }
 }

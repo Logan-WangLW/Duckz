@@ -2,25 +2,40 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Duckz.AzureTable"
-             Title="Information">
+             Title="Duck Or NOT"
+             BackgroundColor="Black"
+             >
+    
     <ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness" iOS="0, 20, 0, 0" />
     </ContentPage.Padding>
     <ContentPage.Content>
         <StackLayout>
-            <Button Text="See Photo Information" TextColor="White" BackgroundColor="Red" Clicked="Handle_ClickedAsync" />
+            <Button Text="See Photo Location Information" TextColor="Red" BackgroundColor="Yellow" Clicked="Handle_ClickedAsync" />
             <ListView x:Name="DuckList" HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Horizontal">
-                                <Label Text="{Binding Longitude, StringFormat='Longitude: {0:N}'}" HorizontalOptions="FillAndExpand" Margin="20,0,0,0" VerticalTextAlignment="Center" />
-                                <Label Text="{Binding Latitude, StringFormat='Latitude: {0:N}'}" VerticalTextAlignment="Center" Margin="0,0,20,0" />
-                            </StackLayout>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50*" />
+                                    <ColumnDefinition Width="50*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding City}" TextColor ="Yellow" Margin="20,0,0,0"/>
+                                <Label Text="{Binding Happiness}" />
+                                <StackLayout Grid.Column="1" Orientation="Vertical" Margin="0,0,20,0">
+                                    <Label Text="{Binding Longitude, StringFormat='Longitude: {0:N}'}"  TextColor="Yellow" HorizontalTextAlignment="End"/>
+                                    <Label Text="{Binding Latitude, StringFormat='Latitude: {0:N}'}" TextColor ="Yellow" HorizontalTextAlignment="End"/>
+                                </StackLayout>
+                            </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <ActivityIndicator x:Name="loading" IsRunning="false"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

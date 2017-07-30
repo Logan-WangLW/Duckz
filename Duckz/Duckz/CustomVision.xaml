@@ -1,13 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Duckz.CustomVision">
+             x:Class="Duckz.CustomVision"
+             Title="Analyze!"
+             BackgroundColor="Black"
+             >
+    
     <StackLayout Margin="20" Orientation="Vertical">
-        <Button Text="Take Photo and Analyze" Clicked="loadCamera" />
+        <Button Text="Take Photo and Analyze" TextColor="Red" BackgroundColor="Yellow" Clicked="loadCamera" />
         <StackLayout Orientation="Horizontal">
-            <Label x:Name="TagLabel">
+            <Label x:Name="TagLabel" TextColor="Yellow">
             </Label>
-            <Label x:Name="PredictionLabel">
+            <Label x:Name="PredictionLabel" TextColor="Yellow">
             </Label>
         </StackLayout>
         <Image x:Name="image" Aspect="AspectFit"/>

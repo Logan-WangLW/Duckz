@@ -11,6 +11,7 @@ using Plugin.Media.Abstractions;
 using Duckz.Model;
 using Xamarin.Forms;
 using Newtonsoft.Json.Linq;
+using Plugin.Geolocator;
 
 namespace Duckz
 { 
@@ -46,8 +47,23 @@ namespace Duckz
                 return file.GetStream();
             });
 
-
+            await postLocationAsync();
             await MakePredictionRequest(file);
+        }
+
+        async Task postLocationAsync()
+        {
+            var locator = CrossGeolocator.Current;
+            locator.DesiredAccuracy = 50;
+            var position = await locator.GetPositionAsync(TimeSpan.FromSeconds(10));
+
+            DuckModel model = new DuckModel()
+            {
+                Longitude = (float)position.Longitude,
+                Latitude = (float)position.Latitude
+            };
+            await AzureManager.AzureManagerInstance.PostDuckInformation(model);
+
         }
 
         static byte[] GetImageAsByteArray(MediaFile file)
@@ -95,12 +111,14 @@ namespace Duckz
 
                     foreach (var item in Probability)
                     {
-                        PredictionLabel.Text += "\n" + item + "%";
+                        Decimal number;
+                        if (Decimal.TryParse(item, out number))
+                        {
+                            PredictionLabel.Text += "\n" + Math.Round(number * 100,2) + "%";
+                        }
+                        else
+                        { PredictionLabel.Text += "\n" + item + "%"; }
                     }
-
-
-
-
                 }
 
                 //Get rid of file once we have finished using it
